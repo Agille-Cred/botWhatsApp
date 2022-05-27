@@ -1,27 +1,66 @@
 import asyncio
 from pyppeteer import launch
+import PySimpleGUI as sg
 from planilha import import_planilha
 from texto import import_texto
 
-async def main():
-    
-    import_texto()
-    
-    planilha = import_planilha()
-    
-    browser = await launch(headless=False)
-    page = await browser.newPage()
-    await page.goto('https://web.whatsapp.com/')
-    await page.screenshot({'path': 'example.png'})
-    await browser.close()
-    
-    for contato in range(int(len(planilha))):
-        nome = planilha.iloc[contato][0]
-        mensagem = 'Bom dia, {}! Como esta?\n \nSou o *, analista de RH da *. O motivo do meu contato é referente ao seu interesse pela vaga de Agente de Negócios.\n \nComo primeira etapa do processo seletivo, há uma Avaliação de Conhecimentos Gerais e Tecnologias, que deverá ser realizada Online.\n \nSegue o link da avaliação: https://forms.gle/okysgNL59BAgxxyi6\n \nA avaliação de conhecimentos ficará disponível até segunda-feira, 30/05/2022 às 09h00.\n \nSe ficou alguma dúvida, entre em contato comigo por aqui mesmo.\n \nEspero te encontrar em breve!'.format(nome)
-        numero = planilha.iloc[contato][1]
-        link = 'https://api.whatsapp.com/send?phone=55{}&text={}'.format(numero, mensagem)
-        print(link)
-         
-    # await page.goto('https://web.whatsapp.com/send?phone=+'+phone[0]+'&text='+mensagem+'');
+icone = 'assets\icon.ico'
+font = ("Arial 12 bold")
+sg.theme()
 
-asyncio.get_event_loop().run_until_complete(main())
+layout = [
+    [
+        sg.Text("Arquivo de Texto       ", font=font), sg.In(
+            size=(30, 1), enable_events=True, key='-texto-'),
+        sg.FileBrowse(button_text="Procurar", font=font, button_color='Black',  key='texto',
+                                  file_types=(("TXT files", "*.txt"),))
+    ],
+    [
+        sg.Text("Planilha de Contatos", font=font), sg.In(
+            size=(30, 1), enable_events=True, key='-planilha-'),
+        sg.FileBrowse(button_text="Procurar", font=font, button_color='Green',  key='planilha',
+                                  file_types=(("XLSX files", "*.xlsx"),))
+    ],
+    [
+        sg.Button('Mandar Mensagens', size=(30, 1), font="Arial 15 bold", )
+    ]
+]
+
+window = sg.Window('Bot WhatsApp', layout,
+                   element_justification='center', icon=icone)
+
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED:
+        break
+    if event == 'Mandar Mensagens':
+
+        local_texto = values['-texto-']
+        texto = import_texto(local_texto)
+
+        local_planilha = values['-planilha-']
+        planilha = import_planilha(local_planilha)
+
+        async def main(texto, planilha):
+            print(texto)
+            print(planilha)
+
+            browser = await launch(headless=False)
+            page = await browser.newPage()
+            await page.goto('https://web.whatsapp.com/')
+            await page.screenshot({'path': 'example.png'})
+            await browser.close()
+
+            for contato in range(int(len(planilha))):
+                nome = planilha.iloc[contato][0]
+                mensagem = 'Bom dia, {}! Como esta?\n \n {}'.format(nome, texto)
+                numero = planilha.iloc[contato][1]
+                link = 'https://api.whatsapp.com/send?phone=55{}&text={}'.format(
+                    numero, mensagem)
+                print(link)
+
+            # await page.goto('https://web.whatsapp.com/send?phone=+'+phone[0]+'&text='+mensagem+'');
+
+        asyncio.get_event_loop().run_until_complete(main())
+
+window.close()

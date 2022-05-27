@@ -1,7 +1,11 @@
 import sys
 
-def import_texto():
+def import_texto(local):
     try:
-      file = open('texto.txt', 'r')
+      file = open(local,'r', encoding="utf8")
+      texto = file.read()
+      print(texto)
     except:
       sys.exit(0)
+      
+    return texto

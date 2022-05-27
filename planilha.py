@@ -1,9 +1,9 @@
 import pandas as pds
 import sys
 
-def import_planilha():
+def import_planilha(local):
     try:
-        file = ('contatos.xlsx')
+        file = local
         data = pds.read_excel(file, names=["Nome","Contato"])
         
         data['Nome'] = data['Nome'] .astype(str)
@@ -17,5 +17,3 @@ def import_planilha():
         print("IMPORT PLANILHA OK")
 
     return data
-
-import_planilha()
