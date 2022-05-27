@@ -1,5 +1,4 @@
 import pandas as pds
-import sys
 
 def import_planilha(local):
     try:
@@ -12,8 +11,7 @@ def import_planilha(local):
         print(data)
     except:
         print("IMPORT PLANILHA Não Efetuado")
-        sys.exit(0)
     else:
-        print("IMPORT PLANILHA OK")
+        print("Planilha OK")
 
     return data
