@@ -3,6 +3,7 @@ from pyppeteer import launch
 import PySimpleGUI as sg
 from planilha import import_planilha
 from texto import import_texto
+import time
 
 icone = 'assets\icon.ico'
 font = ("Arial 12 bold")
@@ -38,6 +39,10 @@ while True:
         local_texto = values['-texto-']
         local_planilha = values['-planilha-']
         
+        # Teste
+        # local_texto = 'texto.txt'
+        # local_planilha = 'teste.xlsx'
+        
         if local_texto != '' and local_planilha != '':
         
             texto = import_texto(local_texto)
@@ -48,19 +53,21 @@ while True:
                 browser = await launch(headless=False)
                 page = await browser.newPage()
                 await page.goto('https://web.whatsapp.com/')
-                await page.screenshot({'path': 'example.png'})
-                await browser.close()
+                time.sleep(20)
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
                     mensagem = 'Bom dia, {}! Como esta?\n \n {}'.format(nome, texto)
                     numero = planilha.iloc[contato][1]
-                    link = 'https://api.whatsapp.com/send?phone=55{}&text={}'.format(
+                    link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                         numero, mensagem)
-                    print(link)
+                    await page.goto(link)
+                    time.sleep(15)
+                    await page.click("span[data-testid='send']")
+                    time.sleep(15)
 
-                # await page.goto('https://web.whatsapp.com/send?phone=+'+phone[0]+'&text='+mensagem+'');
-
+                await browser.close()
+               
             asyncio.get_event_loop().run_until_complete(main(texto, planilha))
 
 window.close()
