@@ -51,7 +51,7 @@ while True:
                     numero = planilha.iloc[contato][1]
                     link = 'https://web.whatsapp.com/send?phone=55{}'.format(numero)
                     await page.goto(link)
-                    time.sleep(10)
+                    time.sleep(11)
                     
                     try:
                         inp = await page.waitFor('._3J6wB')
@@ -63,7 +63,6 @@ while True:
                     except:
                         print('Número {} é válido.'.format(numero))
                         
-                    time.sleep(5)
                     
                 await browser.close()
                 
