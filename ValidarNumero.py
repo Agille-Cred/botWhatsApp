@@ -11,44 +11,33 @@ sg.theme()
 
 layout = [
     [
-        sg.Text("Arquivo de Texto       ", font=font), sg.In(
-            size=(30, 1), enable_events=True, key='-texto-'),
-        sg.FileBrowse(button_text="Procurar", font=font, button_color='Black',  key='texto',
-                                  file_types=(("TXT files", "*.txt"),))
-    ],
-    [
         sg.Text("Planilha de Contatos", font=font), sg.In(
             size=(30, 1), enable_events=True, key='-planilha-'),
         sg.FileBrowse(button_text="Procurar", font=font, button_color='Green',  key='planilha',
                                   file_types=(("XLSX files", "*.xlsx"),))
     ],
     [
-        sg.Button('Mandar Mensagens', size=(30, 1), font="Arial 15 bold", )
+        sg.Button('Validar numeros', size=(30, 1), font="Arial 15 bold", )
     ]
 ]
 
-window = sg.Window('Bot WhatsApp', layout,
+window = sg.Window('Validador Whatsapp', layout,
                    element_justification='center', icon=icone)
 
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:
         break
-    if event == 'Mandar Mensagens':
+    if event == 'Validar numeros':
 
-        local_texto = values['-texto-']
         local_planilha = values['-planilha-']
         
-        # Teste
-        local_texto = 'texto.txt'
-        local_planilha = 'teste.xlsx'
         
-        if local_texto != '' and local_planilha != '':
-        
-            texto = import_texto(local_texto)
+        if local_planilha != '':
+
             planilha = import_planilha(local_planilha)
 
-            async def main(texto, planilha):
+            async def main(planilha):
 
                 browser = await launch(headless=False)
                 page = await browser.newPage()
@@ -57,18 +46,20 @@ while True:
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
-                    mensagem = 'Bom dia, {}! Como esta?\n \n {}'.format(nome, texto)
                     numero = planilha.iloc[contato][1]
-                    link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
-                        numero, mensagem)
+                    link = 'https://web.whatsapp.com/send?phone=55{}'.format(numero)
                     await page.goto(link)
                     time.sleep(10)
-                    await page.click("span[data-testid='send']")
-                    time.sleep(15)
-                    print('Mensagem enviada a {} no numero {}'.format(nome, numero))
+                    try:
+                        inp = await page.waitFor('._3J6wB')
+                        print('numero {} is invalido.'.format(numero))
+                    except:
+                        print('Numero {} é valido.'.format(numero))
+                    time.sleep(5)
+                    
 
                 await browser.close()
                
-            asyncio.get_event_loop().run_until_complete(main(texto, planilha))
+            asyncio.get_event_loop().run_until_complete(main( planilha))
 
 window.close()
