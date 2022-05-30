@@ -2,8 +2,10 @@ import asyncio
 from pyppeteer import launch
 import PySimpleGUI as sg
 from planilha import import_planilha
+from output_df import output
 from texto import import_texto
 import time
+import pandas as pds
 
 icone = 'assets\icon.ico'
 font = ("Arial 12 bold")
@@ -32,13 +34,13 @@ while True:
 
         local_planilha = values['-planilha-']
         
-        
         if local_planilha != '':
 
             planilha = import_planilha(local_planilha)
 
             async def main(planilha):
-
+                
+                df_numeros_invalidos = pds.DataFrame()
                 browser = await launch(headless=False)
                 page = await browser.newPage()
                 await page.goto('https://web.whatsapp.com/')
@@ -50,16 +52,23 @@ while True:
                     link = 'https://web.whatsapp.com/send?phone=55{}'.format(numero)
                     await page.goto(link)
                     time.sleep(10)
+                    
                     try:
                         inp = await page.waitFor('._3J6wB')
-                        print('numero {} is invalido.'.format(numero))
+                        print('Número {} é inválido.'.format(numero))
+                        tam = int(len(df_numeros_invalidos))  
+                        
+                        df_numeros_invalidos.loc[tam + 1,'Nome'] = nome
+                        df_numeros_invalidos.loc[tam + 1,'Contato'] = numero
                     except:
-                        print('Numero {} é valido.'.format(numero))
+                        print('Número {} é válido.'.format(numero))
+                        
                     time.sleep(5)
                     
-
                 await browser.close()
+                
+                output(df_numeros_invalidos)
                
-            asyncio.get_event_loop().run_until_complete(main( planilha))
+            asyncio.get_event_loop().run_until_complete(main(planilha))
 
 window.close()
