@@ -25,7 +25,7 @@ layout = [
                                   file_types=(("XLSX files", "*.xlsx"),))
     ],
     [
-        sg.Button('Mandar Mensagens', size=(30, 1), font="Arial 15 bold", )
+        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold", )
     ]
 ]
 
@@ -60,26 +60,28 @@ while True:
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
-                    mensagem = 'Bom dia, {}! Como esta?\n \n {}'.format(nome, texto)
+                    mensagem = 'Bom dia, {}! Como está?\n \n {}'.format(nome, texto)
                     numero = planilha.iloc[contato][1]
                     link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                         numero, mensagem)
                     await page.goto(link)
+                    time.sleep(10)
                     
                     try:
-                        
                         inp = await page.waitFor('._3J6wB')
+                    except:
+                        print('Numero {} é válido.'.format(numero))
+                    else:
                         print('numero {} é inválido.'.format(numero))
                         tam = int(len(df_numeros_invalidos)) 
                         
                         df_numeros_invalidos.loc[tam + 1,'Nome'] = nome
                         df_numeros_invalidos.loc[tam + 1,'Contato'] = numero
-                    except:
-                        print('Numero {} é válido.'.format(numero))
+                        continue
                         
-                    time.sleep(10)
+                    time.sleep(5)
                     await page.click("span[data-testid='send']")
-                    time.sleep(15)
+                    time.sleep(3)
                     print('Mensagem enviada a {} no número {}'.format(nome, numero))
 
                 await browser.close()

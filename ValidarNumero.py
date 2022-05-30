@@ -44,7 +44,7 @@ while True:
                 browser = await launch(headless=False)
                 page = await browser.newPage()
                 await page.goto('https://web.whatsapp.com/')
-                time.sleep(20)
+                time.sleep(10)
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
