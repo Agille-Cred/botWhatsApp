@@ -42,8 +42,8 @@ while True:
         local_planilha = values['-planilha-']
         
         # Teste
-        local_texto = 'texto.txt'
-        local_planilha = 'teste.xlsx'
+        #local_texto = 'texto.txt'
+        #local_planilha = 'teste.xlsx'
         
         if local_texto != '' and local_planilha != '':
         
@@ -60,7 +60,7 @@ while True:
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
-                    mensagem = 'Bom dia, {}! Como está?\n \n {}'.format(nome, texto)
+                    mensagem = 'Bom dia {} \n \nSou o Gustavo, analista de RH da Ágille Cred. O motivo do meu contato é referente ao seu interesse pela vaga de Agente de Negócios.\n \nComo primeira etapa do processo seletivo, há uma Avaliação de Conhecimentos Gerais e Tecnologias, que deverá ser realizada Online.\n \nSegue o link da avaliação: https://forms.gle/okysgNL59BAgxxyi6 \n \nA avaliação de conhecimentos ficará disponível até quarta-feira, 01/06/2022 às 09h00.\n \nSe ficou alguma dúvida, entre em contato comigo por aqui mesmo.\n \nEspero te encontrar em breve!'.format(nome)
                     numero = planilha.iloc[contato][1]
                     link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                         numero, mensagem)
@@ -79,9 +79,7 @@ while True:
                         df_numeros_invalidos.loc[tam + 1,'Contato'] = numero
                         continue
                         
-                    time.sleep(5)
                     await page.click("span[data-testid='send']")
-                    time.sleep(3)
                     print('Mensagem enviada a {} no número {}'.format(nome, numero))
 
                 await browser.close()
