@@ -1,11 +1,11 @@
-import asyncio
-from pyppeteer import launch
-import PySimpleGUI as sg
-from planilha import import_planilha
-from texto import import_texto
-from output_df import output
-import time
+import asyncio, time
 import pandas as pds
+import PySimpleGUI as sg
+from pyppeteer import launch
+from functions.planilha import import_planilha
+from functions.texto import import_texto
+from functions.output import output
+
 
 icone = 'assets\icon.ico'
 font = ("Arial 12 bold")
@@ -40,17 +40,14 @@ while True:
 
         local_texto = values['-texto-']
         local_planilha = values['-planilha-']
-        
-        # Teste
-        #local_texto = 'texto.txt'
-        #local_planilha = 'teste.xlsx'
-        
+
         if local_texto != '' and local_planilha != '':
-        
+
             texto = import_texto(local_texto)
             planilha = import_planilha(local_planilha)
 
-            async def main(texto, planilha):
+            # Pyppeteer
+            async def mandarMensagem(texto, planilha):
 
                 df_numeros_invalidos = pds.DataFrame()
                 browser = await launch(headless=False)
@@ -60,31 +57,32 @@ while True:
 
                 for contato in range(int(len(planilha))):
                     nome = planilha.iloc[contato][0]
-                    mensagem = 'Bom dia {} \n \nSou o Gustavo, analista de RH da Ágille Cred. O motivo do meu contato é referente ao seu interesse pela vaga de Agente de Negócios.\n \nComo primeira etapa do processo seletivo, há uma Avaliação de Conhecimentos Gerais e Tecnologias, que deverá ser realizada Online.\n \nSegue o link da avaliação: https://forms.gle/okysgNL59BAgxxyi6 \n \nA avaliação de conhecimentos ficará disponível até quarta-feira, 01/06/2022 às 09h00.\n \nSe ficou alguma dúvida, entre em contato comigo por aqui mesmo.\n \nEspero te encontrar em breve!'.format(nome)
+                    mensagem = "Olá {}. {}".format(nome, texto)
                     numero = planilha.iloc[contato][1]
                     link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                         numero, mensagem)
                     await page.goto(link)
                     time.sleep(10)
-                    
+
                     try:
                         inp = await page.waitFor('._3J6wB')
                     except:
                         print('Numero {} é válido.'.format(numero))
                     else:
                         print('numero {} é inválido.'.format(numero))
-                        tam = int(len(df_numeros_invalidos)) 
-                        
-                        df_numeros_invalidos.loc[tam + 1,'Nome'] = nome
-                        df_numeros_invalidos.loc[tam + 1,'Contato'] = numero
+                        tam = int(len(df_numeros_invalidos))
+
+                        df_numeros_invalidos.loc[tam + 1, 'Nome'] = nome
+                        df_numeros_invalidos.loc[tam + 1, 'Contato'] = numero
                         continue
-                        
+
                     await page.click("span[data-testid='send']")
                     print('Mensagem enviada a {} no número {}'.format(nome, numero))
+                    time.sleep(2)
 
                 await browser.close()
                 output(df_numeros_invalidos)
-               
-            asyncio.get_event_loop().run_until_complete(main(texto, planilha))
+
+            asyncio.get_event_loop().run_until_complete(mandarMensagem(texto, planilha))
 
 window.close()

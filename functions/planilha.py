@@ -10,7 +10,7 @@ def import_planilha(local):
 
         print(data)
     except:
-        print("IMPORT PLANILHA Não Efetuado")
+        print("Erro ao importar planilha")
     else:
         print("Planilha OK")
 
