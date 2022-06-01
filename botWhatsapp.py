@@ -41,11 +41,24 @@ while True:
         local_texto = values['-texto-']
         local_planilha = values['-planilha-']
 
+        if local_texto == '':
+            sg.popup("Insira um arquivo de texto")
+            continue
+        
+        if local_planilha == '':
+            sg.popup("Insira um arquivo de planilha")
+             
         if local_texto != '' and local_planilha != '':
-
-            texto = import_texto(local_texto)
-            planilha = import_planilha(local_planilha)
-
+            try:
+              texto = import_texto(local_texto)
+            except:
+              sg.popup("Erro ao importar texto")
+            
+            try:
+              planilha = import_planilha(local_planilha)
+            except:
+              sg.popup("Erro ao importar planilha")
+            
             # Pyppeteer
             async def mandarMensagem(texto, planilha):
 
