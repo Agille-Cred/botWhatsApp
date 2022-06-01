@@ -3,9 +3,7 @@ import pandas as pds
 import PySimpleGUI as sg
 from pyppeteer import launch
 from functions.planilha import import_planilha
-from functions.texto import import_texto
 from functions.output import output
-
 
 icone = 'assets\icon.ico'
 font = ("Arial 12 bold")
@@ -13,24 +11,26 @@ sg.theme()
 
 layout = [
     [
-        sg.Text("Arquivo de Texto       ", font=font), sg.In(
-            size=(30, 1), enable_events=True, key='-texto-'),
-        sg.FileBrowse(button_text="Procurar", font=font, button_color='Black',  key='texto',
-                                  file_types=(("TXT files", "*.txt"),))
+        sg.Text("Mensagem      ", font=font, justification='center')
+    ],
+    [
+        sg.Text("Olá [nome], ", font="Arial 8 bold", justification='left')  
+    ],
+    [
+        sg.Multiline(size=(65,3), key='-texto-')
     ],
     [
         sg.Text("Planilha de Contatos", font=font), sg.In(
             size=(30, 1), enable_events=True, key='-planilha-'),
-        sg.FileBrowse(button_text="Procurar", font=font, button_color='Green',  key='planilha',
+        sg.FileBrowse(button_text="Procurar", font=font, button_color='Green',  key='-planilha-', 
                                   file_types=(("XLSX files", "*.xlsx"),))
     ],
     [
-        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold", )
+        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold")
     ]
 ]
 
-window = sg.Window('Bot WhatsApp', layout,
-                   element_justification='center', icon=icone)
+window = sg.Window('Bot WhatsApp', layout, icon=icone)
 
 while True:
     event, values = window.read()
@@ -38,21 +38,18 @@ while True:
         break
     if event == 'Mandar Mensagens':
 
-        local_texto = values['-texto-']
+        texto = values['-texto-']
         local_planilha = values['-planilha-']
 
-        if local_texto == '':
-            sg.popup("Insira um arquivo de texto")
+        if texto == '':
+            sg.popup("Insira uma mensagem")
             continue
         
         if local_planilha == '':
             sg.popup("Insira um arquivo de planilha")
+            continue
              
-        if local_texto != '' and local_planilha != '':
-            try:
-              texto = import_texto(local_texto)
-            except:
-              sg.popup("Erro ao importar texto")
+        if texto != '' and local_planilha != '':
             
             try:
               planilha = import_planilha(local_planilha)
@@ -95,6 +92,7 @@ while True:
 
                 await browser.close()
                 output(df_numeros_invalidos)
+                sg.popup("Mensagens enviadas")
 
             asyncio.get_event_loop().run_until_complete(mandarMensagem(texto, planilha))
 
