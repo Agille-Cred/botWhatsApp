@@ -1,7 +1,6 @@
 # botWhatsApp
 
-<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/>
-<img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>
+<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/><img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>
 
 [![GitHub license](https://img.shields.io/github/license/renatocfrancisco/botWhatsapp)](https://github.com/renatocfrancisco/botWhatsapp)![GitHub repo size](https://img.shields.io/github/repo-size/renatocfrancisco/botWhatsapp)
 
@@ -9,9 +8,10 @@
 
 ## Instruções
 
-Para executar: Escreva a mensagem, e insira uma planilha com duas colunas de Nomes e Números (com 19, sem traços ou espaços).
-Precisará entrar no WhatsApp Web com o celular, escaneando o QRCode quando solicitado.
-Após o bot executar o script, será gerado uma planilha com Nomes e Números de mensagens não enviadas.
+Para executar:
+- Escreva a mensagem, e insira uma planilha com duas colunas de Nomes e Números (com 19, sem traços ou espaços).
+- Precisará entrar no WhatsApp Web com o celular, escaneando o QRCode quando solicitado.
+- Após o bot executar o script, será gerado uma planilha com Nomes e Números de mensagens não enviadas.
 
 **Utilizando [Python Pandas](https://pandas.pydata.org/), [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/), [pyppeteer](https://github.com/pyppeteer/pyppeteer) e [PySimpleGui](https://pysimplegui.readthedocs.io/en/latest/).**
 ```
