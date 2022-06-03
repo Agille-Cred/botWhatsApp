@@ -3,7 +3,7 @@ from pandas import ExcelWriter
 def output(df_output):
 
     try:
-        writer1 = ExcelWriter('planilha_numerosInvalidos.xlsx')
+        writer1 = ExcelWriter('planilha_numerosNãoEnviados.xlsx')
         df_output.to_excel(writer1, index=False)
         writer1.save()
     except:

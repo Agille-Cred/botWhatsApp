@@ -61,48 +61,40 @@ while True:
                           
                 async def mandarMensagem(texto, planilha):
 
-                    df_numeros_invalidos = pds.DataFrame()
+                    numeros_n_enviados = pds.DataFrame()
                     browser = await launch(headless=False)
                     page = await browser.newPage()
                     await page.goto('https://web.whatsapp.com/')
                     time.sleep(20)
-
-                    for contato in range(int(len(planilha))):
+                    
+                    mensagens = int(len(planilha))
+                    
+                    for contato in range(mensagens):
                         nome = planilha.iloc[contato][0]
                         mensagem = "Olá {}. {}".format(nome, texto)
                         numero = planilha.iloc[contato][1]
                         link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                             numero, mensagem)
+                        tam = int(len(numeros_n_enviados))
                         await page.goto(link)
-                        time.sleep(10)
-
-                        try:
-                            inp = await page.waitFor('._3J6wB')
-                        except:
-                            print('Numero {} é válido.'.format(numero))
-                        else:
-                            print('numero {} é inválido.'.format(numero))
-                            tam = int(len(df_numeros_invalidos))
-
-                            df_numeros_invalidos.loc[tam + 1, 'Nome'] = nome
-                            df_numeros_invalidos.loc[tam + 1, 'Contato'] = numero
-                            continue
+                        await page.waitFor(10000)
                         
                         try:
                             await page.click("span[data-testid='send']")
+                            await page.waitFor(3000)
                         except:
-                            df_numeros_invalidos.loc[tam + 1, 'Nome'] = nome
-                            df_numeros_invalidos.loc[tam + 1, 'Contato'] = numero
+                            numeros_n_enviados.loc[tam + 1, 'Nome'] = nome
+                            numeros_n_enviados.loc[tam + 1, 'Contato'] = numero
+                            print('Mensagem não enviada a {} no número: {}'.format(nome, numero))
                             continue
                         else:
-                            print('Mensagem enviada a {} no número {}'.format(nome, numero))
+                            print('Mensagem enviada a {} no número: {}'.format(nome, numero))
                         
-                        
-                        time.sleep(2)
+                        time.sleep(3)
 
                     await browser.close()
-                    output(df_numeros_invalidos)
-                    sg.popup("Mensagens enviadas", font=font)
+                    output(numeros_n_enviados)
+                    sg.popup("{} Mensagens enviadas.\n{} Não enviadas.".format(mensagens - tam, tam), font=font)
 
                 asyncio.run(mandarMensagem(texto, planilha))
             except Exception as e:
