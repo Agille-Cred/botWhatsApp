@@ -1,7 +1,5 @@
-# botWhatsApp
-
-[<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/><img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>](https://pyppeteer.github.io/pyppeteer/)
-[![GitHub license](https://img.shields.io/github/license/renatocfrancisco/botWhatsapp)](https://github.com/renatocfrancisco/botWhatsapp)![GitHub repo size](https://img.shields.io/github/repo-size/renatocfrancisco/botWhatsapp)
+[<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/> <img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>](https://pyppeteer.github.io/pyppeteer/)
+[![GitHub license](https://img.shields.io/github/license/renatocfrancisco/botWhatsapp)](https://github.com/renatocfrancisco/botWhatsapp) ![GitHub repo size](https://img.shields.io/github/repo-size/renatocfrancisco/botWhatsapp)
 
 ![Executável do botWhatsApp v1.3](assets/app.png)
 
