@@ -11,10 +11,10 @@ sg.theme()
 
 layout = [
     [
-        sg.Text("Mensagem      ", font=font, justification='center')
+        sg.Text("Mensagem", font=font, justification='center')
     ],
     [
-        sg.Text("Olá [nome], ", font="Arial 8 bold", justification='left')  
+        sg.Text("Olá [nome]. ", font="Arial 8 bold", justification='left')  
     ],
     [
         sg.Multiline(size=(65,3), key='-texto-')

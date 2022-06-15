@@ -1,4 +1,4 @@
-[<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/> <img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>](https://pyppeteer.github.io/pyppeteer/)
+[<img alt="Pyppeteer" src="https://img.shields.io/badge/Pyppeteer-175510?style=flat&logo=Puppeteer&logoColor=white"/> <img alt="Python" src="https://img.shields.io/badge/Python-43e600?style=flat&logo=python&logoColor=white"/>](https://pyppeteer.github.io/pyppeteer/) ![GitHub repo size](https://img.shields.io/github/repo-size/Agille-Cred/botWhatsApp) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Agille-Cred/botWhatsApp)
 
 ![Executável do botWhatsApp v1.3](assets/app.png)
 
