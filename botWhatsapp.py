@@ -26,7 +26,10 @@ layout = [
                                   file_types=(("XLSX files", "*.xlsx"),))
     ],
     [
-        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold")
+        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold", key='botaoEnviar')
+    ],
+    [
+        sg.ProgressBar(100, orientation='h', s=(43,12), key='progbar', bar_color="Green")
     ]
 ]
 
@@ -37,7 +40,6 @@ while True:
     if event == sg.WIN_CLOSED:
         break
     if event == 'Mandar Mensagens':
-
         texto = values['-texto-']
         local_planilha = values['-planilha-']
 
@@ -50,7 +52,8 @@ while True:
             continue
              
         if texto != '' and local_planilha != '':
-            
+            window['botaoEnviar'].update(disabled=True)
+            window['progbar'].update(bar_color="Red")
             try:
               planilha = import_planilha(local_planilha)
             except:
@@ -66,6 +69,7 @@ while True:
                     page = await browser.newPage()
                     await page.goto('https://web.whatsapp.com/', options={"waitUntil": "domcontentloaded"})
                     
+                    envios = 0
                     TentativaAtual = 0
                     NumerodeTentativas = 5
 
@@ -103,11 +107,14 @@ while True:
                             continue
                         else:
                             print('Mensagem enviada a {} no número: {}'.format(nome, numero))
+                            envios += 1
+                            window['progbar'].UpdateBar(envios,mensagens)
                         
                         time.sleep(3)
 
                     await browser.close()
                     output(numeros_n_enviados)
+                    window['botaoEnviar'].update(disabled=False)
                     sg.popup("{} Mensagens enviadas.\n{} Não enviadas.".format(mensagens - tam, tam), font=font)
 
                 asyncio.run(mandarMensagem(texto, planilha))
