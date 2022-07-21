@@ -26,7 +26,10 @@ layout = [
                                   file_types=(("XLSX files", "*.xlsx"),))
     ],
     [
-        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold")
+        sg.Button('Mandar Mensagens', size=(39, 1), font="Arial 15 bold", key='botaoEnviar')
+    ],
+    [
+        sg.ProgressBar(100, orientation='h', s=(43,12), key='progbar', bar_color="Green")
     ]
 ]
 
@@ -37,7 +40,6 @@ while True:
     if event == sg.WIN_CLOSED:
         break
     if event == 'Mandar Mensagens':
-
         texto = values['-texto-']
         local_planilha = values['-planilha-']
 
@@ -50,7 +52,8 @@ while True:
             continue
              
         if texto != '' and local_planilha != '':
-            
+            window['botaoEnviar'].update(disabled=True)
+            window['progbar'].update(bar_color="Red")
             try:
               planilha = import_planilha(local_planilha)
             except:
@@ -64,22 +67,37 @@ while True:
                     numeros_n_enviados = pds.DataFrame()
                     browser = await launch(headless=False)
                     page = await browser.newPage()
-                    await page.goto('https://web.whatsapp.com/')
-                    time.sleep(20)
+                    await page.goto('https://web.whatsapp.com/', options={"waitUntil": "domcontentloaded"})
+                    
+                    envios = 0
+                    TentativaAtual = 0
+                    NumerodeTentativas = 5
+
+                    while(True):
+                        try:
+                            await page.waitForSelector('#app > div > div > div.ldL67._3sh5K > div > div > div.WM0_u > span')
+                            break
+                        except print(0):
+                            if(++TentativaAtual == NumerodeTentativas):
+                                print('Esperando o QRCODE ser validado, tentativa atual: ', TentativaAtual)
+                            else:
+                                pass
                     
                     mensagens = int(len(planilha))
                     
-                    for contato in range(mensagens):
-                        nome = planilha.iloc[contato][0]
+                    for contato in planilha.iloc:
+                        nome = contato[0]
+                        numero = contato[1]
                         mensagem = "Olá {}. {}".format(nome, texto)
-                        numero = planilha.iloc[contato][1]
                         link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                             numero, mensagem)
                         tam = int(len(numeros_n_enviados))
-                        await page.goto(link)
-                        await page.waitFor(10000)
+                        await page.goto(link, options={"waitUntil": "domcontentloaded"})
+                        await page.waitForSelector("._3Lm9O")
+                        time.sleep(2)
                         
                         try:
+                            await page.waitForSelector(".g0rxnol2")
                             await page.click("span[data-testid='send']")
                             await page.waitFor(3000)
                         except:
@@ -89,11 +107,14 @@ while True:
                             continue
                         else:
                             print('Mensagem enviada a {} no número: {}'.format(nome, numero))
+                            envios += 1
+                            window['progbar'].UpdateBar(envios,mensagens)
                         
                         time.sleep(3)
 
                     await browser.close()
                     output(numeros_n_enviados)
+                    window['botaoEnviar'].update(disabled=False)
                     sg.popup("{} Mensagens enviadas.\n{} Não enviadas.".format(mensagens - tam, tam), font=font)
 
                 asyncio.run(mandarMensagem(texto, planilha))

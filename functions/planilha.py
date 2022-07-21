@@ -3,13 +3,9 @@ import pandas as pds
 def import_planilha(local):
     
     file = local
-    data = pds.read_excel(file, names=["Nome","Contato"], header=None)
+    data = pds.read_excel(file, header=None)
     
-    data['Nome'] = data['Nome'] .astype(str)
-    data['Contato'] = data['Contato'].astype(str)
-
-    print(data)
+    data[0] = data[0].astype(str)
+    data[1] = data[1].astype(str)
     
-    print("Planilha OK")
-
     return data
