@@ -64,22 +64,36 @@ while True:
                     numeros_n_enviados = pds.DataFrame()
                     browser = await launch(headless=False)
                     page = await browser.newPage()
-                    await page.goto('https://web.whatsapp.com/')
-                    time.sleep(20)
+                    await page.goto('https://web.whatsapp.com/', options={"waitUntil": "domcontentloaded"})
+                    
+                    TentativaAtual = 0
+                    NumerodeTentativas = 5
+
+                    while(True):
+                        try:
+                            await page.waitForSelector('#app > div > div > div.ldL67._3sh5K > div > div > div.WM0_u > span')
+                            break
+                        except print(0):
+                            if(++TentativaAtual == NumerodeTentativas):
+                                print('Esperando o QRCODE ser validado, tentativa atual: ', TentativaAtual)
+                            else:
+                                pass
                     
                     mensagens = int(len(planilha))
                     
-                    for contato in range(mensagens):
-                        nome = planilha.iloc[contato][0]
+                    for contato in planilha.iloc:
+                        nome = contato[0]
+                        numero = contato[1]
                         mensagem = "Olá {}. {}".format(nome, texto)
-                        numero = planilha.iloc[contato][1]
                         link = 'https://web.whatsapp.com/send?phone=55{}&text={}'.format(
                             numero, mensagem)
                         tam = int(len(numeros_n_enviados))
-                        await page.goto(link)
-                        await page.waitFor(10000)
+                        await page.goto(link, options={"waitUntil": "domcontentloaded"})
+                        await page.waitForSelector("._3Lm9O")
+                        time.sleep(2)
                         
                         try:
+                            await page.waitForSelector(".g0rxnol2")
                             await page.click("span[data-testid='send']")
                             await page.waitFor(3000)
                         except:
